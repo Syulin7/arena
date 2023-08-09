@@ -10,24 +10,24 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// TensorflowServingProcesser use the default processer
-type TensorflowServingProcesser struct {
+// KServeProcesser use the default processer
+type KServeProcesser struct {
 	*processer
 }
 
-func NewTensorflowServingProcesser() Processer {
+func NewKServeProcesser() Processer {
 	p := &processer{
-		processerType:   types.TFServingJob,
+		processerType:   types.KServeJob,
 		client:          config.GetArenaConfiger().GetClientSet(),
 		enable:          true,
 		useIstioGateway: true,
 	}
-	return &TensorflowServingProcesser{
+	return &KServeProcesser{
 		processer: p,
 	}
 }
 
-func SubmitTensorflowServingJob(namespace string, args *types.TensorFlowServingArgs) (err error) {
+func SubmitKServeJob(namespace string, args *types.KServeArgs) (err error) {
 	nameWithVersion := fmt.Sprintf("%v-%v", args.Name, args.Version)
 	args.Namespace = namespace
 	processers := GetAllProcesser()
@@ -43,8 +43,8 @@ func SubmitTensorflowServingJob(namespace string, args *types.TensorFlowServingA
 		return err
 	}
 	// the master is also considered as a worker
-	chart := util.GetChartsFolder() + "/tfserving"
-	err = workflow.SubmitJob(nameWithVersion, string(types.TFServingJob), namespace, args, chart, args.HelmOptions...)
+	chart := util.GetChartsFolder() + "/kserve"
+	err = workflow.SubmitJob(nameWithVersion, string(types.KServeJob), namespace, args, chart, args.HelmOptions...)
 	if err != nil {
 		return err
 	}

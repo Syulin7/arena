@@ -2,14 +2,16 @@ package serving
 
 import (
 	"fmt"
-	"github.com/kubeflow/arena/pkg/apis/types"
-	"github.com/kubeflow/arena/pkg/util/kubectl"
+	"strconv"
+	"strings"
+
 	log "github.com/sirupsen/logrus"
 	appsv1 "k8s.io/api/apps/v1"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/resource"
-	"strconv"
-	"strings"
+
+	"github.com/kubeflow/arena/pkg/apis/types"
+	"github.com/kubeflow/arena/pkg/util/kubectl"
 )
 
 const (
@@ -256,6 +258,11 @@ func UpdateCustomServing(args *types.UpdateCustomServingArgs) error {
 	return updateDeployment(args.Name, args.Version, deploy)
 }
 
+func UpdateKServe(args *types.UpdateKServeArgs) error {
+
+	return nil
+}
+
 func findAndBuildDeployment(args *types.CommonUpdateServingArgs) (*appsv1.Deployment, error) {
 	job, err := SearchServingJob(args.Namespace, args.Name, args.Version, args.Type)
 	if err != nil {
@@ -370,4 +377,9 @@ func updateDeployment(name, version string, deploy *appsv1.Deployment) error {
 		log.Errorf("The serving job %s with version %s update failed", name, version)
 	}
 	return err
+}
+
+func findAndBuildInferenceService(args *types.CommonUpdateServingArgs) error {
+
+	return nil
 }
