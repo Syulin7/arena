@@ -45,13 +45,14 @@ func SubmitTFJob(namespace string, submitArgs *types.SubmitTFJobArgs) (err error
 		return err
 	}
 	tfjob_chart := util.GetChartsFolder() + "/tfjob"
-	// the master is also considered as a worker
-	// submitArgs.WorkerCount = submitArgs.WorkerCount - 1
 
 	if submitArgs.TFRuntime != nil {
 		tfjob_chart = util.GetChartsFolder() + "/" + submitArgs.TFRuntime.GetChartName()
 	}
 
+	// Compatible with training-operator CRD.
+	// In training-operator, the TFJob CRD has a breaking change, such as modifying spec.cleanPodPolicy to spec.runPolicy.cleanPodPolicy.
+	// Compatibility between the two types of CRDs is achieved by checking for the existence of runPolicy.
 	compatible := CompatibleJobCRD(k8saccesser.TensorflowCRDName, "runPolicy")
 	submitArgs.TrainingOperatorCRD = compatible
 

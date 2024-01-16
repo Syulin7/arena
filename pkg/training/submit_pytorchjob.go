@@ -46,6 +46,9 @@ func SubmitPytorchJob(namespace string, submitArgs *types.SubmitPyTorchJobArgs) 
 	// the master is also considered as a worker
 	submitArgs.WorkerCount = submitArgs.WorkerCount - 1
 
+	// Compatible with training-operator CRD.
+	// In training-operator, the PytorchJob CRD has a breaking change, such as modifying spec.cleanPodPolicy to spec.runPolicy.cleanPodPolicy.
+	// Compatibility between the two types of CRDs is achieved by checking for the existence of runPolicy.
 	compatible := CompatibleJobCRD(k8saccesser.PytorchCRDName, "runPolicy")
 	submitArgs.TrainingOperatorCRD = compatible
 
